@@ -1,0 +1,44 @@
+/* reset spacing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* full screen background */
+body {
+  height: 100vh;
+  background: blue;
+}
+
+/* search bar at top */
+.search-bar {
+  position: fixed;
+  top: 10px;
+  left: 5%;
+
+  width: 90%;
+  padding: 10px;
+
+  background: white;
+  border-radius: 20px;
+
+  z-index: 1000;
+}
+
+/* bottom nav bar */
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  height: 60px;
+
+  background: white;
+  border-top: 1px solid #ccc;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
