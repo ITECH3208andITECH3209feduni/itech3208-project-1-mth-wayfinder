@@ -26,6 +26,9 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
 
   transform: translate(-50%, -50%);
   transform-origin: center;
