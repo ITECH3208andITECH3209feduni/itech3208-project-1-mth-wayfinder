@@ -44,43 +44,12 @@
 </div>  
 
 <!-- Lets you zoom in and out -->
-<script>
 
+<script src="Scripts.js"></script>
 
-let map = document.querySelector(".map");
-let scale = 1;
+</body>
+</html>
 
-// zoom in/out
-window.addEventListener("wheel", (e) => {
-  e.preventDefault();
-
-  let zoomSpeed = 0.1;
-
-  if (e.deltaY < 0) {
-    scale += zoomSpeed;
-  } else {
-    scale -= zoomSpeed;
-  }
-  /* Max zoom /  Min Zoom  */
-  scale = Math.min(Math.max(scale, 0.7), 2);
-
-  updateMap();
-}, { passive: false });
-
-function updateMap() {
-  map.style.transform =
-    `translate(-50%, -50%) scale(${scale})`;
-}
-
-// OPEN MENU
-function openMenu() {
-  document.getElementById("poiMenu").style.display = "block";
-}
-
-// CLOSE MENU
-function closeMenu() {
-  document.getElementById("poiMenu").style.display = "none";
-}
 
 
 </script>
