@@ -18,17 +18,74 @@
 </header>
 
 <!-- Main map/content -->
- <main>
- <h1></h1>
- </main>
+<div class="map-container">
+  <img src="images/MtHelenCampusMap.jpg" class="map">
+</div>
 
 <!-- Bottom navigation -->
   <footer>
     <button>Map</button>
-    <button>Points of Interest</button>
+    <button onclick="openMenu()">Points of Interest</button>
     <button>Buildings</button>
   </footer>
+  
+<!-- Point of interest menu -->  
+<div id="poiMenu" class="menu">
+  <h2>Points of Interest</h2>
+  <ul>
+    <li>Toilets</li>
+    <li>Building Locations</li>
+    <li>Parking</li>
+    <li>Elevator</li>
+	<li>Water Station</li>
+	<li>Fed Living</li>
+  </ul>
+  <button onclick="closeMenu()">Close</button>
+</div>  
 
+<!-- Lets you zoom in and out -->
+<script>
+
+
+let map = document.querySelector(".map");
+let scale = 1;
+
+// zoom in/out
+window.addEventListener("wheel", (e) => {
+  e.preventDefault();
+
+  let zoomSpeed = 0.1;
+
+  if (e.deltaY < 0) {
+    scale += zoomSpeed;
+  } else {
+    scale -= zoomSpeed;
+  }
+  /* Max zoom /  Min Zoom  */
+  scale = Math.min(Math.max(scale, 0.7), 2);
+
+  updateMap();
+}, { passive: false });
+
+function updateMap() {
+  map.style.transform =
+    `translate(-50%, -50%) scale(${scale})`;
+}
+
+// OPEN MENU
+function openMenu() {
+  document.getElementById("poiMenu").style.display = "block";
+}
+
+// CLOSE MENU
+function closeMenu() {
+  document.getElementById("poiMenu").style.display = "none";
+}
+
+
+</script>
+
+</script>
 </body>
 </html>
 </html>
