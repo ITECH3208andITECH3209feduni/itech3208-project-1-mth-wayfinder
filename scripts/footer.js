@@ -9,3 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+document.getElementById("buildingsBtn")?.addEventListener("click", () => {
+    window.location.href = "buildings.html";
+});
