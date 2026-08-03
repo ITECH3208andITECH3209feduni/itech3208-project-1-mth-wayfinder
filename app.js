@@ -179,7 +179,7 @@ fetch("data/buildings.geojson")
             onEachFeature(feature, layer) {
 
                 const name = feature.properties?.name || "Building";
-                const pageUrl = feature.properties?.page || "pages/default.html";
+                const pageUrl = feature.properties?.page || "Buildings/*TEST/error.html";
 
                 layer.on("click", e => {
 
