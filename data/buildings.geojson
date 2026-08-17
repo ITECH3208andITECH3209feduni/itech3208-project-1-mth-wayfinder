@@ -105,7 +105,8 @@
         "building": "university",
         "description": "Swimming Pool, Gym",
         "name": "P Building",
-        "source": "Bing"
+        "source": "Bing",
+        "page": "Buildings/P_Building/Level_1.html"
       },
       "geometry": {
         "type": "Polygon",
