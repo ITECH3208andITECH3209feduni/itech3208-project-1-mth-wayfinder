@@ -96,6 +96,47 @@ BUILDINGS PAGE
 */
 
 main {
-    padding: 20px;
+    padding: 40px;
     padding-bottom: 80px;
+}
+
+/*
+FLOOR PLAN VIEWER
+*/
+
+#imageViewer {
+    position: relative;
+
+    width: 100%;
+    height: calc(100vh - 180px);
+
+    overflow: hidden;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: #eee;
+
+    touch-action: none;
+}
+
+#floorPlan {
+    max-width: 100%;
+    max-height: 100%;
+
+    width: auto;
+    height: auto;
+
+    object-fit: contain;
+
+    user-select: none;
+
+    cursor: grab;
+
+    transform-origin: center center;
+}
+
+#floorPlan:active {
+    cursor: grabbing;
 }
