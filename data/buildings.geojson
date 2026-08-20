@@ -4156,7 +4156,9 @@
         "@id": "way/313510596",
         "building": "university",
         "name": "T Building",
-        "page": "Buildings/T_Building/Level_0.html"
+        "page": "Buildings/T_Building/Level_0.html",
+        "roomPrefix": "T[0-3]",
+        "roomPattern": "^T[0-3]\\d{2}$"
       },
       "geometry": {
         "type": "Polygon",

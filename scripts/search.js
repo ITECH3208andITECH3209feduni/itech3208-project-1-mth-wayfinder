@@ -15,14 +15,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 .filter(feature => feature.properties?.page)
                 .map(feature => ({
                     name: feature.properties.name,
-                    page: feature.properties.page
+                    page: feature.properties.page,
+                    roomPrefix: feature.properties.roomPrefix || null,
+                    roomPattern: feature.properties.roomPattern || null
                 }));
 
         });
 
     searchInput.addEventListener("input", () => {
 
-        const query = searchInput.value.toLowerCase().trim();
+        const query = searchInput.value.trim();
 
         results.innerHTML = "";
 
@@ -31,9 +33,32 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const matches = buildings.filter(building =>
-            building.name.toLowerCase().includes(query)
-        );
+        const matches = buildings.filter(building => {
+
+            const nameMatch = building.name
+                .toLowerCase()
+                .includes(query.toLowerCase());
+
+            let roomMatch = false;
+
+            if (building.roomPrefix) {
+
+                const prefixPattern =
+                    new RegExp("^" + building.roomPrefix, "i");
+
+                roomMatch = prefixPattern.test(query);
+            }
+
+            if (building.roomPattern) {
+
+                const fullPattern =
+                    new RegExp(building.roomPattern, "i");
+
+                roomMatch = roomMatch || fullPattern.test(query);
+            }
+
+            return nameMatch || roomMatch;
+        });
 
         matches.forEach(building => {
 
