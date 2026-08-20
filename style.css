@@ -114,10 +114,15 @@ main h1 {
     text-align: center;
 }
 
+main h2 {
+    margin: 0;
+    padding: 15px;
+}
+
 p {
     margin: 0;
     padding-bottom: 15px;
-    text-align: center;
+    padding-left: 15px;
 }
 
 /*
