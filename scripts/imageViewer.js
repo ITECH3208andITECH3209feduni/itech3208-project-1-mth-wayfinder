@@ -1,3 +1,4 @@
+const imageViewer = document.getElementById("imageViewer");
 const image = document.getElementById("floorPlan");
 
 let scale = 1;
@@ -16,15 +17,32 @@ function updateImage() {
         `translate(${positionX}px, ${positionY}px) scale(${scale})`;
 }
 
+function constrainPosition() {
+
+    const viewerWidth = imageViewer.clientWidth;
+    const viewerHeight = imageViewer.clientHeight;
+
+    const imageWidth = image.offsetWidth * scale;
+    const imageHeight = image.offsetHeight * scale;
+
+    const maxX = Math.max(0, (imageWidth - viewerWidth) / 2);
+    const maxY = Math.max(0, (imageHeight - viewerHeight) / 2);
+
+    positionX = Math.max(-maxX, Math.min(positionX, maxX));
+    positionY = Math.max(-maxY, Math.min(positionY, maxY));
+}
+
 function fitImage() {
+
     scale = 1;
+
     positionX = 0;
     positionY = 0;
 
     updateImage();
 }
 
-image.addEventListener("wheel", (event) => {
+imageViewer.addEventListener("wheel", (event) => {
 
     event.preventDefault();
 
@@ -36,20 +54,28 @@ image.addEventListener("wheel", (event) => {
 
     scale = Math.max(minScale, Math.min(scale, 5));
 
+    constrainPosition();
+
     updateImage();
 });
 
-image.addEventListener("mousedown", (event) => {
+imageViewer.addEventListener("pointerdown", (event) => {
+
+    if (scale <= minScale) {
+        return;
+    }
 
     dragging = true;
 
     startX = event.clientX - positionX;
     startY = event.clientY - positionY;
 
+    imageViewer.setPointerCapture(event.pointerId);
+
     image.style.cursor = "grabbing";
 });
 
-window.addEventListener("mousemove", (event) => {
+imageViewer.addEventListener("pointermove", (event) => {
 
     if (!dragging) {
         return;
@@ -58,17 +84,28 @@ window.addEventListener("mousemove", (event) => {
     positionX = event.clientX - startX;
     positionY = event.clientY - startY;
 
+    constrainPosition();
+
     updateImage();
 });
 
-window.addEventListener("mouseup", () => {
+imageViewer.addEventListener("pointerup", (event) => {
+
+    dragging = false;
+
+    imageViewer.releasePointerCapture(event.pointerId);
+
+    image.style.cursor = "grab";
+});
+
+imageViewer.addEventListener("pointercancel", () => {
 
     dragging = false;
 
     image.style.cursor = "grab";
 });
 
-image.addEventListener("dblclick", () => {
+imageViewer.addEventListener("dblclick", () => {
 
     fitImage();
 

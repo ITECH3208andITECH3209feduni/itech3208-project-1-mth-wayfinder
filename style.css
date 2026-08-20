@@ -58,15 +58,27 @@ SEARCH BAR
 .search-bar {
     position: fixed;
     top: 20px;
-    left: 10%;
+    left: 50%;
 
-    width: 80%;
-    padding: 10px;
+    width: 70%;
 
-    background: white;
-    border-radius: 20px;
+    transform: translateX(-50%);
 
     z-index: 1000;
+}
+
+.search-bar input {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px 18px;
+
+    border: 1px solid #ccc;
+    border-radius: 25px;
+
+    background: white;
+
+    font-size: 16px;
 }
 
 /*
@@ -96,8 +108,16 @@ BUILDINGS PAGE
 */
 
 main h1 {
-    padding: 40px;
-    padding-bottom: 80px;
+    margin: 0;
+    padding: 15px;
+    padding-top: 80px;
+    text-align: center;
+}
+
+p {
+    margin: 0;
+    padding-bottom: 15px;
+    text-align: center;
 }
 
 /*
@@ -121,7 +141,18 @@ FLOOR PLAN VIEWER
     touch-action: none;
 }
 
+#floorPlanContainer {
+    position: relative;
+
+    display: inline-block;
+
+    max-width: 100%;
+    max-height: 100%;
+}
+
 #floorPlan {
+    display: block;
+
     max-width: 100%;
     max-height: 100%;
 
@@ -132,11 +163,7 @@ FLOOR PLAN VIEWER
 
     user-select: none;
 
-    cursor: grab;
-
-    transform-origin: center center;
-}
-
-#floorPlan:active {
     cursor: grabbing;
+    
+    transform-origin: center center;
 }
