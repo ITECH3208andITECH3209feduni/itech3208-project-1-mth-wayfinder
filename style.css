@@ -78,7 +78,42 @@ SEARCH BAR
 
     background: white;
 
+    font-family: Arial, sans-serif;
     font-size: 16px;
+
+    outline: none;
+}
+
+#searchResults {
+    display: none;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    margin-top: 5px;
+
+    background: white;
+
+    border-radius: 15px;
+
+    overflow: hidden;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+.search-result {
+    padding: 12px 18px;
+
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+
+    background: white;
+
+    cursor: pointer;
+}
+
+.search-result:hover {
+    background: #f2f2f2;
 }
 
 /*

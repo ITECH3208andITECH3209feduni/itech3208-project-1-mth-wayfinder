@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!searchInput) return;
 
-
     fetch("../../data/buildings.geojson")
         .then(response => response.json())
         .then(data => {
@@ -21,24 +20,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
-
     searchInput.addEventListener("input", () => {
 
-        const query = searchInput.value.toLowerCase();
+        const query = searchInput.value.toLowerCase().trim();
 
         results.innerHTML = "";
-
 
         if (!query) {
             results.style.display = "none";
             return;
         }
 
-
         const matches = buildings.filter(building =>
             building.name.toLowerCase().includes(query)
         );
-
 
         matches.forEach(building => {
 
@@ -48,21 +43,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
             result.textContent = building.name;
 
-
-            result.onclick = () => {
-
+            result.addEventListener("click", () => {
                 window.location.href = "../../" + building.page;
-
-            };
-
+            });
 
             results.appendChild(result);
 
         });
 
-
         results.style.display =
             matches.length > 0 ? "block" : "none";
+    });
+
+    document.addEventListener("click", (event) => {
+
+        if (!event.target.closest(".search-bar")) {
+            results.style.display = "none";
+        }
 
     });
 
