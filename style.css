@@ -9,7 +9,8 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
 
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
 }
 
 #map {
@@ -78,7 +79,8 @@ SEARCH BAR
 
     background: white;
 
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
     font-size: 16px;
 
     outline: none;
@@ -104,7 +106,8 @@ SEARCH BAR
 .search-result {
     padding: 12px 18px;
 
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
     font-size: 16px;
 
     background: white;
@@ -147,11 +150,17 @@ main h1 {
     padding: 15px;
     padding-top: 80px;
     text-align: center;
+
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
 }
 
 main h2 {
     margin: 0;
     padding: 15px;
+
+    font-family: 'Sora', sans-serif;
+    font-weight: 500;
 }
 
 p {
