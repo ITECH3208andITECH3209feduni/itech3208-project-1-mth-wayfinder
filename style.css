@@ -1,26 +1,52 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600&family=Sora:wght@500;600&display=swap');
-
 html,
 body {
     margin: 0;
     padding: 0;
 
     width: 100%;
-    min-height: 100%;
-    background-color: #f3f8ff;
-    overflow-x: hidden;
-    overflow-y: auto;
+    height: 100%;
 
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
+    overflow: hidden;
+
+    font-family: Arial, sans-serif;
 }
 
+
+/*
+BUILDINGS PAGE
+*/
+
+html:has(body.buildings-page),
+body.buildings-page {
+    height: auto;
+
+    min-height: 100%;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+}
+
+body.buildings-page {
+    padding-bottom: 60px;
+
+    box-sizing: border-box;
+}
+
+
+/*
+MAP
+*/
+
 #map {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: calc(100dvh - 60px);
+
+    position: relative;
 
     z-index: 1;
 }
+
 
 /*
 ROUTING PANEL
@@ -39,20 +65,18 @@ ROUTING PANEL
 
     font-size: 14px;
 
-    z-index: 1;
+    z-index: 1002;
 }
-
-/*
-MOBILE IMPROVEMENTS
-*/
 
 @media (max-width: 768px) {
 
     .leaflet-routing-container {
         width: 90%;
+
         font-size: 12px;
     }
 }
+
 
 /*
 SEARCH BAR
@@ -60,6 +84,7 @@ SEARCH BAR
 
 .search-bar {
     position: fixed;
+
     top: 20px;
     left: 50%;
 
@@ -67,22 +92,24 @@ SEARCH BAR
 
     transform: translateX(-50%);
 
-    z-index: 1000;
+    z-index: 2000;
 }
 
 .search-bar input {
     width: 100%;
+
     box-sizing: border-box;
 
     padding: 12px 18px;
 
     border: 1px solid #ccc;
+
     border-radius: 25px;
 
     background: white;
 
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
+    font-family: Arial, sans-serif;
+
     font-size: 16px;
 
     outline: none;
@@ -92,6 +119,7 @@ SEARCH BAR
     display: none;
 
     width: 100%;
+
     box-sizing: border-box;
 
     margin-top: 5px;
@@ -108,8 +136,8 @@ SEARCH BAR
 .search-result {
     padding: 12px 18px;
 
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
+    font-family: Arial, sans-serif;
+
     font-size: 16px;
 
     background: white;
@@ -121,116 +149,265 @@ SEARCH BAR
     background: #f2f2f2;
 }
 
+
 /*
-BOTTOM NAVIGATION
+FLOORPLAN PAGE
 */
 
-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-
-    width: 100%;
-    height: 60px;
-
-    background: #0902ff;
-    border-top: 1px solid #ccc;
+main:has(#imageViewer) {
+    height: calc(100dvh - 60px);
 
     display: flex;
-    justify-content: space-around;
+
+    flex-direction: column;
+
+    padding-bottom: 0;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+}
+
+
+/*
+FLOORPLAN HEADING
+*/
+
+main:has(#imageViewer) h1 {
+    flex-shrink: 0;
+
+    margin: 0;
+
+    padding: 15px;
+
+    padding-top: 100px;
+
+    text-align: center;
+
+    box-sizing: border-box;
+}
+
+
+/*
+FLOOR NAVIGATION
+*/
+
+.floor-navigation {
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 18px 20px;
+
+    overflow: hidden;
+
+    flex-shrink: 0;
+}
+
+.floor-navigation a {
+    display: flex;
+
+    justify-content: center;
     align-items: center;
 
-    z-index: 1000;
+    min-width: 0;
+    min-height: 0;
+
+    padding: 7px 5px;
+
+    background: #f2f2f2;
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    color: #222;
+
+    text-align: center;
+
+    font-size: clamp(10px, 3vw, 19px);
+
+    line-height: 1.1;
+
+    white-space: nowrap;
+
+    box-sizing: border-box;
 }
 
-footer button {
-    padding: 10px 18px;
-    border: none;
-    border-radius: 20px;
-    background: white;
-    color: black;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    cursor: pointer;
-}
+.floor-navigation a:not([href]) {
+    background: rgb(23, 31, 146);
 
-footer button.active {
-    background: black;
     color: white;
 }
 
-/*
-BUILDINGS PAGE
-*/
-
-main h1 {
-    margin: 0;
-    padding: 15px;
-    padding-top: 80px;
-    text-align: center;
-
-    font-family: 'Sora', sans-serif;
-    font-weight: 600;
-}
-
-main h2 {
-    margin: 0;
-    padding: 15px;
-
-    font-family: 'Sora', sans-serif;
-    font-weight: 500;
-}
-
-p {
-    margin: 0;
-    padding-bottom: 15px;
-    padding-left: 15px;
-}
 
 /*
-FLOOR PLAN VIEWER
+FLOORPLAN VIEWER
 */
 
 #imageViewer {
     position: relative;
 
     width: 100%;
-    height: calc(100vh - 180px);
+
+    flex: 1;
+
+    min-height: 0;
 
     overflow: hidden;
 
     display: flex;
+
     justify-content: center;
     align-items: center;
 
     background: #eee;
 
     touch-action: none;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    box-sizing: border-box;
 }
+
+
+/*
+FLOORPLAN CONTAINER
+*/
 
 #floorPlanContainer {
     position: relative;
 
-    display: inline-block;
+    width: 100%;
+    height: 100%;
 
-    max-width: 100%;
-    max-height: 100%;
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-shrink: 0;
+
+    overflow: visible;
+
+    box-sizing: border-box;
 }
+
+
+/*
+FLOORPLAN IMAGE
+*/
 
 #floorPlan {
     display: block;
 
-    max-width: 100%;
-    max-height: 100%;
-
     width: auto;
     height: auto;
 
-    object-fit: contain;
+    max-width: none;
+    max-height: none;
+
+    margin: 0;
 
     user-select: none;
+    -webkit-user-select: none;
 
-    cursor: grabbing;
-    
+    -webkit-user-drag: none;
+
+    cursor: default;
+
     transform-origin: center center;
+
+    will-change: transform;
+
+    pointer-events: none;
+}
+
+
+/*
+BOTTOM NAVIGATION / FOOTER
+*/
+
+footer {
+    position: fixed;
+
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+
+    height: 60px;
+
+    box-sizing: border-box;
+
+    background: rgb(23, 31, 146);
+
+    border-top: 1px solid #ccc;
+
+    display: flex;
+
+    justify-content: space-around;
+    align-items: center;
+
+    z-index: 2000;
+}
+
+footer button {
+    padding: 10px 18px;
+
+    border: none;
+
+    border-radius: 20px;
+
+    background: white;
+
+    color: black;
+
+    font-family: 'Inter', sans-serif;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+/*
+STANDARD PAGE CONTENT
+*/
+
+main {
+    padding-bottom: 80px;
+}
+
+main h1 {
+    margin: 0;
+
+    padding: 15px;
+
+    padding-top: 100px;
+
+    text-align: center;
+}
+
+main h2 {
+    margin: 0;
+
+    padding: 15px;
+}
+
+p {
+    margin: 0;
+
+    padding-bottom: 15px;
+
+    padding-left: 15px;
 }

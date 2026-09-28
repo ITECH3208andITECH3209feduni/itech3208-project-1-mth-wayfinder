@@ -2,90 +2,157 @@ let buildings = [];
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const searchInput = document.getElementById("pageSearch");
-    const results = document.getElementById("searchResults");
+    const searchInput =
+        document.getElementById("pageSearch");
 
-    if (!searchInput) return;
+    const results =
+        document.getElementById("searchResults");
+
+    if (!searchInput || !results) {
+        return;
+    }
 
     fetch("../../data/buildings.geojson")
         .then(response => response.json())
         .then(data => {
 
             buildings = data.features
-                .filter(feature => feature.properties?.page)
+                .filter(
+                    feature =>
+                        feature.properties?.page
+                )
                 .map(feature => ({
-                    name: feature.properties.name,
-                    page: feature.properties.page,
-                    roomPrefix: feature.properties.roomPrefix || null,
-                    roomPattern: feature.properties.roomPattern || null
+                    name:
+                        feature.properties.name,
+                    page:
+                        feature.properties.page,
+                    roomPrefix:
+                        feature.properties.roomPrefix ||
+                        null,
+                    roomPattern:
+                        feature.properties.roomPattern ||
+                        null
                 }));
 
         });
 
-    searchInput.addEventListener("input", () => {
+    searchInput.addEventListener(
+        "input",
+        () => {
 
-        const query = searchInput.value.trim();
+            const query =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
 
-        results.innerHTML = "";
+            results.innerHTML = "";
 
-        if (!query) {
-            results.style.display = "none";
-            return;
-        }
-
-        const matches = buildings.filter(building => {
-
-            const nameMatch = building.name
-                .toLowerCase()
-                .includes(query.toLowerCase());
-
-            let roomMatch = false;
-
-            if (building.roomPrefix) {
-
-                const prefixPattern =
-                    new RegExp("^" + building.roomPrefix, "i");
-
-                roomMatch = prefixPattern.test(query);
+            if (!query) {
+                results.style.display = "none";
+                return;
             }
 
-            if (building.roomPattern) {
+            const searchQuery =
+                query.replace(/\*/g, "");
 
-                const fullPattern =
-                    new RegExp(building.roomPattern, "i");
+            const matches =
+                buildings.filter(building => {
 
-                roomMatch = roomMatch || fullPattern.test(query);
-            }
+                    const name =
+                        building.name.toLowerCase();
 
-            return nameMatch || roomMatch;
-        });
+                    const nameMatch =
+                        name.includes(query);
 
-        matches.forEach(building => {
+                    let roomMatch = false;
 
-            const result = document.createElement("div");
+                    if (
+                        building.roomPrefix &&
+                        searchQuery
+                    ) {
 
-            result.className = "search-result";
+                        const prefix =
+                            building.roomPrefix
+                                .toLowerCase();
 
-            result.textContent = building.name;
+                        roomMatch =
+                            searchQuery.startsWith(
+                                prefix
+                            );
+                    }
 
-            result.addEventListener("click", () => {
-                window.location.href = "../../" + building.page;
+                    if (
+                        building.roomPattern &&
+                        searchQuery
+                    ) {
+
+                        const fullPattern =
+                            new RegExp(
+                                building.roomPattern,
+                                "i"
+                            );
+
+                        roomMatch =
+                            roomMatch ||
+                            fullPattern.test(
+                                searchQuery
+                            );
+                    }
+
+                    return (
+                        nameMatch ||
+                        roomMatch
+                    );
+                });
+
+            matches.forEach(building => {
+
+                const result =
+                    document.createElement("div");
+
+                result.className =
+                    "search-result";
+
+                result.textContent =
+                    building.name;
+
+                result.addEventListener(
+                    "click",
+                    () => {
+
+                        window.location.href =
+                            "../../" +
+                            building.page;
+
+                    }
+                );
+
+                results.appendChild(result);
+
             });
 
-            results.appendChild(result);
-
-        });
-
-        results.style.display =
-            matches.length > 0 ? "block" : "none";
-    });
-
-    document.addEventListener("click", (event) => {
-
-        if (!event.target.closest(".search-bar")) {
-            results.style.display = "none";
+            results.style.display =
+                matches.length > 0
+                    ? "block"
+                    : "none";
         }
+    );
 
-    });
+    document.addEventListener(
+        "click",
+        event => {
+
+            if (
+                !event.target.closest(
+                    ".search-bar"
+                )
+            ) {
+
+                results.style.display =
+                    "none";
+            }
+
+        }
+    );
 
 });

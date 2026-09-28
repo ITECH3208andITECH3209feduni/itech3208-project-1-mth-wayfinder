@@ -1,59 +1,111 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Building - L - Level - 0</title>
+<html lang="en">
 
-  <link rel="stylesheet" href="../../style.css">
+<head>
+
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Building - L - Level - 0</title>
+
+    <link
+        rel="stylesheet"
+        href="../../style.css"
+    >
+
 </head>
 
 <body>
 
-<!-- Search bar (top overlay) -->
 <header>
+
     <div class="search-bar">
 
-        <input 
-            type="text" 
-            id="pageSearch" 
+        <input
+            type="text"
+            id="pageSearch"
             placeholder="Search buildings..."
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
         >
 
         <div id="searchResults"></div>
 
     </div>
+
 </header>
 
-<!-- Main map/content -->
- <main>
- <h1>Building - L - Level - 0</h1>
 
-   <p><a href="Level_0.html">Level 0</a></p>
-  <p><a href="Level_1.html">Level 1</a></p>
-  <p><a href="Level_2.html">Level 2</a></p>
-  <p><a href="Level_9.html">Level 9</a></p>
+<main>
 
-     <div id="imageViewer">
-        <img 
-            id="floorPlan"
-            src="Images/FP-MTH L Level 0.png"
-            alt="L Building Level 0 Floor Plan"
-        >
+<h1>
+    <a href="../../index.html?building=L">
+        L Building - Library
+    </a>
+</h1>
+
+
+    <div class="floor-navigation">
+
+        <a>
+            Level 0
+        </a>
+
+        <a href="Level_1.html">
+            Level 1
+        </a>
+
+        <a href="Level_2.html">
+            Level 2
+        </a>
+
+        <a href="Level_9.html">
+            Level 9
+        </a>
+
     </div>
- </main>
 
-<!-- Bottom navigation -->
+
+    <div id="imageViewer">
+
+        <div id="floorPlanContainer">
+
+            <img
+                id="floorPlan"
+                src="Images/FP-MTH L Level 0.png"
+                alt="L Building Level 0 Floor Plan"
+            >
+
+        </div>
+
+    </div>
+
+</main>
+
+
 <footer>
-    <button class="mapButton">Map</button>
-    <button>Points of Interest</button>
-    <button id="buildingsBtn">Buildings</button>
+
+    <button class="mapButton">
+        Map
+    </button>
+
+
+    <button id="buildingsBtn">
+        Buildings
+    </button>
+
 </footer>
+
 
 <script src="../../scripts/footer.js"></script>
 <script src="../../scripts/search.js"></script>
 <script src="../../scripts/imageViewer.js"></script>
 
 </body>
-</html>
+
 </html>

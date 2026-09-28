@@ -10,41 +10,59 @@
 
 <body>
 
-<!-- Search bar (top overlay) -->
 <header>
+
     <div class="search-bar">
 
-        <input 
-            type="text" 
-            id="pageSearch" 
+        <input
+            type="text"
+            id="pageSearch"
             placeholder="Search buildings..."
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
         >
 
         <div id="searchResults"></div>
 
     </div>
+
 </header>
 
 <!-- Main map/content -->
  <main>
- <h1>Building - Q1 - Level - 6</h1>
+ <h1>
+    <a href="../../index.html?building=Q">
+        Q Building
+    </a>
+</h1>
 
-   <p><a href="Q1_Level_6.html">Q1 Level 6</a></p>
-  <p><a href="Q2_Level_6.html">Q2 Level 6</a></p>
+    <div class="floor-navigation">
+
+        <a>Q1 Level 6</a>
+        <a href="Q2_Level_6.html">Q2 Level 6</a>
+
+    </div>
 
      <div id="imageViewer">
+
+        <div id="floorPlanContainer">
+
         <img 
             id="floorPlan"
             src="Images/FP-MTH Q1 Level 6.png"
-            alt="Q1 Building Level 6 Floor Plan"
+            alt="Q Building Q1 Level 6 Floor Plan"
         >
+
+        </div>
+
     </div>
  </main>
 
 <!-- Bottom navigation -->
 <footer>
     <button class="mapButton">Map</button>
-    <button>Points of Interest</button>
     <button id="buildingsBtn">Buildings</button>
 </footer>
 
@@ -54,4 +72,4 @@
 
 </body>
 </html>
-</html>
+

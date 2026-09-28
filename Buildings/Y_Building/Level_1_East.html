@@ -10,48 +10,66 @@
 
 <body>
 
-<!-- Search bar (top overlay) -->
 <header>
+
     <div class="search-bar">
 
-        <input 
-            type="text" 
-            id="pageSearch" 
+        <input
+            type="text"
+            id="pageSearch"
             placeholder="Search buildings..."
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
         >
 
         <div id="searchResults"></div>
 
     </div>
+
 </header>
 
 <!-- Main map/content -->
  <main>
- <h1>Building - Y - Level - 1 - East</h1>
+ <h1>
+    <a href="../../index.html?building=Y">
+        Y Building
+    </a>
+</h1>
 
-   <p><a href="Level_0_East.html">Level 0 East</a></p>
-  <p><a href="Level_0_West.html">Level 0 West</a></p>
-  <p><a href="Level_1_East.html">Level 1 East</a></p>
-  <p><a href="Level_1_West.html">Level 1 West</a></p>
-  <p><a href="Level_2_East.html">Level 2 East</a></p>
-  <p><a href="Level_2_West.html">Level 2 West</a></p>
-  <p><a href="Level_3_East.html">Level 3 East</a></p>
-  <p><a href="Level_3_West.html">Level 3 West</a></p>
-  <p><a href="Level_9.html">Level 9</a></p>
+    <div class="floor-navigation">
+
+        <a href="Level_0_East.html">Level 0 East</a>
+        <a href="Level_0_West.html">Level 0 West</a>
+        <a>Level 1 East</a>
+        <a href="Level_1_West.html">Level 1 West</a>
+        <a href="Level_2_East.html">Level 2 East</a>
+        <a href="Level_2_West.html">Level 2 West</a>
+        <a href="Level_3_East.html">Level 3 East</a>
+        <a href="Level_3_West.html">Level 3 West</a>
+        <a href="Level_9.html">Level 9</a>
+
+    </div>
 
      <div id="imageViewer">
+
+        <div id="floorPlanContainer">
+
         <img 
             id="floorPlan"
             src="Images/FP-MTH Y Level 1 East.png"
-            alt="Y Building Level 1 East Floor Plan"
+            alt="Y Building East Level 1 Floor Plan"
         >
+
+        </div>
+
     </div>
  </main>
 
 <!-- Bottom navigation -->
 <footer>
     <button class="mapButton">Map</button>
-    <button>Points of Interest</button>
     <button id="buildingsBtn">Buildings</button>
 </footer>
 
@@ -61,4 +79,4 @@
 
 </body>
 </html>
-</html>
+

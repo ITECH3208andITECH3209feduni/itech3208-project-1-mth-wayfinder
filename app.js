@@ -1,237 +1,709 @@
-﻿//
-// ============================================
-// CAMPUS BOUNDS
-//
-
-const southWest = L.latLng(-37.63012, 143.88818);
+﻿const southWest = L.latLng(-37.63012, 143.88818);
 const northEast = L.latLng(-37.62208, 143.89760);
-const campusBounds = L.latLngBounds(southWest, northEast);
 
-//
-// ============================================
-// MAP INIT
-//
+const campusBounds = L.latLngBounds(
+    southWest,
+    northEast
+);
 
 const map = L.map("map", {
+
     center: [
         (southWest.lat + northEast.lat) / 2,
         (southWest.lng + northEast.lng) / 2
     ],
+
     zoom: 17,
+
     minZoom: 16,
     maxZoom: 18,
+
     maxBounds: campusBounds,
     maxBoundsViscosity: 1.0
+
 });
 
-map.attributionControl.setPrefix(false);
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        attribution:
+            '<a href="https://leafletjs.com/" target="_blank">' +
+            '<img src="https://leafletjs.com/docs/images/logo.png" ' +
+            'alt="" style="height:18px; vertical-align:middle;"></a> ' +
+            '| ' +
+            '<a href="https://www.openstreetmap.org/copyright" target="_blank">' +
+            '<img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Openstreetmap_logo.svg" ' +
+            'alt="" style="height:18px; vertical-align:middle;"> ' +
+            'OpenStreetMap</a>'
+    }
+).addTo(map);
 
-//
-// ============================================
-// BASE MAP
-//
-
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: "&copy; OpenStreetMap contributors"
-}).addTo(map);
-
-//
-// ============================================
-// ROUTER
-//
 
 const sharedRouter = L.Routing.osrmv1({
-    serviceUrl: "https://routing.openstreetmap.de/routed-foot/route/v1"
+
+    serviceUrl:
+        "https://routing.openstreetmap.de/routed-foot/route/v1"
+
 });
 
-//
-// ============================================
-// STATE
-//
 
 let userLatLng = null;
 let userMarker = null;
-let accuracyCircle = null;
 
 let routingControl = null;
 let destinationMarker = null;
 
-//
-// ============================================
-// USER LOCATION
-//
+let currentDestination = null;
+let currentDestinationName = "Destination";
+
+let lastRoutePosition = null;
+
+let routeRequestId = 0;
+let routeRequestInProgress = false;
+
+const ROUTE_UPDATE_DISTANCE = 5;
+const MAX_GPS_ACCURACY = 50;
+
+const params = new URLSearchParams(window.location.search);
+const buildingId = params.get("building");
+
 
 function updateUserLocation(lat, lng, accuracy) {
 
-    userLatLng = L.latLng(lat, lng);
+    const newPosition = L.latLng(lat, lng);
 
-    if (!campusBounds.contains(userLatLng)) return;
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        return;
+    }
+
+    if (
+        Number.isFinite(accuracy) &&
+        accuracy > MAX_GPS_ACCURACY
+    ) {
+        return;
+    }
+
+    if (!campusBounds.contains(newPosition)) {
+        return;
+    }
+
+    userLatLng = newPosition;
 
     if (!userMarker) {
 
-        userMarker = L.circleMarker(userLatLng, {
-            radius: 10,
-            fillColor: "#007bff",
-            color: "#fff",
-            weight: 3,
-            fillOpacity: 1
-        }).addTo(map);
-
-        accuracyCircle = L.circle(userLatLng, {
-            radius: accuracy,
-            color: "#007bff",
-            fillOpacity: 0.15
-        }).addTo(map);
+        userMarker = L.circleMarker(
+            userLatLng,
+            {
+                radius: 10,
+                fillColor: "#007bff",
+                color: "#fff",
+                weight: 3,
+                fillOpacity: 1
+            }
+        ).addTo(map);
 
         map.setView(userLatLng, 18);
 
+    } else {
+
+        userMarker.setLatLng(userLatLng);
+
+    }
+
+    if (!currentDestination) {
         return;
     }
 
-    userMarker.setLatLng(userLatLng);
-    accuracyCircle.setLatLng(userLatLng);
-    accuracyCircle.setRadius(accuracy);
+    if (!lastRoutePosition) {
+
+        updateRouteFromCurrentLocation();
+        return;
+
+    }
+
+    const distanceMoved =
+        map.distance(
+            lastRoutePosition,
+            userLatLng
+        );
+
+    if (
+        distanceMoved >= ROUTE_UPDATE_DISTANCE &&
+        !routeRequestInProgress
+    ) {
+
+        updateRouteFromCurrentLocation();
+
+    }
+
 }
+
 
 if (navigator.geolocation) {
+
     navigator.geolocation.watchPosition(
-        pos => updateUserLocation(
-            pos.coords.latitude,
-            pos.coords.longitude,
-            pos.coords.accuracy
-        ),
-        console.log,
+
+        position => {
+
+            updateUserLocation(
+                position.coords.latitude,
+                position.coords.longitude,
+                position.coords.accuracy
+            );
+
+        },
+
+        error => {
+
+            console.warn(
+                "GPS error:",
+                error.message
+            );
+
+        },
+
         {
             enableHighAccuracy: true,
-            maximumAge: 1000
+            maximumAge: 1000,
+            timeout: 10000
         }
+
     );
+
+} else {
+
+    console.warn(
+        "Geolocation is not supported by this browser."
+    );
+
 }
 
-//
-// ============================================
-// ROUTING
-//
+const locateButton =
+    document.getElementById("locateButton");
 
-function createRoute(destination, name = "Destination") {
+locateButton.addEventListener(
+    "click",
+    () => {
+
+        if (!userLatLng) {
+
+            alert(
+                "Waiting for GPS location..."
+            );
+
+            return;
+        }
+
+        map.setView(
+            userLatLng,
+            18
+        );
+
+    }
+);
+
+
+function createRoute(
+    destination,
+    name = "Destination"
+) {
 
     if (!userLatLng) {
-        alert("Waiting for GPS location...");
+
+        alert(
+            "Waiting for GPS location..."
+        );
+
+        return;
+
+    }
+
+    currentDestination = destination;
+    currentDestinationName = name;
+
+    lastRoutePosition = null;
+
+    routeRequestId++;
+
+    routeRequestInProgress = false;
+
+    if (destinationMarker) {
+
+        map.removeLayer(
+            destinationMarker
+        );
+
+    }
+
+    destinationMarker =
+        L.marker(destination)
+            .addTo(map)
+            .bindPopup(name)
+            .openPopup();
+
+    if (routingControl) {
+
+        map.removeControl(
+            routingControl
+        );
+
+        routingControl = null;
+
+    }
+
+    updateRouteFromCurrentLocation();
+
+}
+
+
+function updateRouteFromCurrentLocation() {
+
+    if (
+        !userLatLng ||
+        !currentDestination ||
+        routeRequestInProgress
+    ) {
         return;
     }
 
-    if (destinationMarker) {
-        map.removeLayer(destinationMarker);
-    }
+    const routeStart =
+        L.latLng(
+            userLatLng.lat,
+            userLatLng.lng
+        );
 
-    destinationMarker = L.marker(destination)
-        .addTo(map)
-        .bindPopup(name)
-        .openPopup();
+    const requestId =
+        ++routeRequestId;
 
-    if (routingControl) {
-        map.removeControl(routingControl);
-    }
+    routeRequestInProgress = true;
 
-    routingControl = L.Routing.control({
-        waypoints: [userLatLng, destination],
-        router: sharedRouter,
-        routeWhileDragging: false,
-        addWaypoints: false,
-        draggableWaypoints: false,
-        fitSelectedRoutes: true,
-        show: false,
-        createMarker: () => null,
-        lineOptions: {
-            styles: [{
-                color: "#007bff",
-                weight: 6,
-                opacity: 0.9
-            }]
-        }
-    }).addTo(map);
+    const newRoutingControl =
+        L.Routing.control({
 
-    map.closePopup();
-}
+            waypoints: [
+                routeStart,
+                currentDestination
+            ],
 
-function routeToBuilding(lat, lng, name) {
-    createRoute(L.latLng(lat, lng), name);
-}
+            router: sharedRouter,
 
-//
-// ============================================
-// BUILDINGS
-//
+            routeWhileDragging: false,
 
-fetch("data/buildings.geojson")
-    .then(res => res.json())
-    .then(data => {
+            addWaypoints: false,
 
-        L.geoJSON(data, {
+            draggableWaypoints: false,
 
-            style: () => ({
-                color: "#007bff",
-                weight: 2,
-                fillColor: "#007bff",
-                fillOpacity: 0.2
-            }),
+            fitSelectedRoutes: false,
 
-            onEachFeature(feature, layer) {
+            show: false,
 
-                const name = feature.properties?.name || "Building";
-                const pageUrl = feature.properties?.page || "Buildings/_TEST/error.html";
+            collapsible: false,
 
-                layer.on("click", e => {
+            itineraryBuilder: false,
 
-                    const clicked = e.latlng;
 
-                    layer.bindPopup(`
-                        <div style="text-align:center;min-width:180px;">
-                            <h3>${name}</h3>
+            createMarker: () => null,
 
-                            <button
-                                onclick="window.location.href='${pageUrl}'"
-                                style="width:100%;margin-bottom:10px;padding:10px;border:none;border-radius:8px;background:#007bff;color:white;">
-                                Open Building
-                            </button>
+            lineOptions: {
 
-                            <button
-                                onclick="routeToBuilding(${clicked.lat},${clicked.lng},'${name}')"
-                                style="width:100%;padding:10px;border:none;border-radius:8px;background:#28a745;color:white;">
-                                Directions
-                            </button>
-                        </div>
-                    `);
+                styles: [
+                    {
+                        color: "#007bff",
+                        weight: 6,
+                        opacity: 0.9
+                    }
+                ]
 
-                    layer.openPopup(clicked);
-                });
             }
 
-        }).addTo(map);
+        });
+
+
+    newRoutingControl.on(
+        "routesfound",
+        () => {
+
+            if (requestId !== routeRequestId) {
+
+                map.removeControl(
+                    newRoutingControl
+                );
+
+                return;
+
+            }
+
+            if (routingControl) {
+
+                map.removeControl(
+                    routingControl
+                );
+
+            }
+
+            routingControl =
+                newRoutingControl;
+
+            lastRoutePosition =
+                routeStart;
+
+            routeRequestInProgress =
+                false;
+
+        }
+    );
+
+
+    newRoutingControl.on(
+        "routingerror",
+        error => {
+
+            if (
+                requestId === routeRequestId
+            ) {
+
+                console.warn(
+                    "Routing error:",
+                    error.error
+                );
+
+                routeRequestInProgress =
+                    false;
+
+            }
+
+            map.removeControl(
+                newRoutingControl
+            );
+
+        }
+    );
+
+
+    newRoutingControl.addTo(map);
+
+}
+
+
+function routeToBuilding(
+    lat,
+    lng,
+    name
+) {
+
+    createRoute(
+        L.latLng(lat, lng),
+        name
+    );
+
+}
+
+
+let buildingLayer = null;
+
+
+fetch(
+    "data/buildings.geojson"
+)
+    .then(response => {
+
+        if (!response.ok) {
+
+            throw new Error(
+                `Failed to load buildings.geojson: ${response.status}`
+            );
+
+        }
+
+        return response.json();
+
+    })
+    .then(data => {
+
+        buildingLayer =
+            L.geoJSON(
+                data,
+                {
+
+                    style: () => ({
+
+                        color: "#007bff",
+
+                        weight: 2,
+
+                        fillColor: "#007bff",
+
+                        fillOpacity: 0.2
+
+                    }),
+
+                    onEachFeature: (
+                        feature,
+                        layer
+                    ) => {
+
+                        const name =
+                            feature.properties?.name ||
+                            "Building";
+
+                        const pageUrl =
+                            feature.properties?.page ||
+                            null;
+
+
+                        layer.on(
+                            "click",
+                            event => {
+
+                                const clicked =
+                                    event.latlng;
+
+
+                                const popup =
+                                    document.createElement(
+                                        "div"
+                                    );
+
+                                popup.style.textAlign =
+                                    "center";
+
+                                popup.style.minWidth =
+                                    "180px";
+
+
+                                const heading =
+                                    document.createElement(
+                                        "h3"
+                                    );
+
+                                heading.textContent =
+                                    name;
+
+
+                                const openButton =
+                                    document.createElement(
+                                        "button"
+                                    );
+
+                                openButton.textContent =
+                                    "Open Building";
+
+                                openButton.style.width =
+                                    "100%";
+
+                                openButton.style.marginBottom =
+                                    "10px";
+
+                                openButton.style.padding =
+                                    "10px";
+
+                                openButton.style.border =
+                                    "none";
+
+                                openButton.style.borderRadius =
+                                    "8px";
+
+                                openButton.style.background =
+                                    "#007bff";
+
+                                openButton.style.color =
+                                    "white";
+
+
+                                if (pageUrl) {
+
+                                    openButton.addEventListener(
+                                        "click",
+                                        () => {
+
+                                            window.location.href =
+                                                pageUrl;
+
+                                        }
+                                    );
+
+                                } else {
+
+                                    openButton.disabled =
+                                        true;
+
+                                }
+
+
+                                const directionsButton =
+                                    document.createElement(
+                                        "button"
+                                    );
+
+                                directionsButton.textContent =
+                                    "Directions";
+
+                                directionsButton.style.width =
+                                    "100%";
+
+                                directionsButton.style.padding =
+                                    "10px";
+
+                                directionsButton.style.border =
+                                    "none";
+
+                                directionsButton.style.borderRadius =
+                                    "8px";
+
+                                directionsButton.style.background =
+                                    "#28a745";
+
+                                directionsButton.style.color =
+                                    "white";
+
+
+                                directionsButton.addEventListener(
+                                    "click",
+                                    () => {
+
+                                        routeToBuilding(
+                                            clicked.lat,
+                                            clicked.lng,
+                                            name
+                                        );
+
+                                    }
+                                );
+
+
+                                popup.appendChild(
+                                    heading
+                                );
+
+                                popup.appendChild(
+                                    openButton
+                                );
+
+                                popup.appendChild(
+                                    directionsButton
+                                );
+
+
+                                layer
+                                    .bindPopup(popup)
+                                    .openPopup(
+                                        clicked
+                                    );
+
+                            }
+                        );
+
+                    }
+
+                }
+            )
+            .addTo(map);
+
+
+if (buildingId) {
+
+    const building = data.features.find(
+        feature => feature.id === buildingId
+    );
+
+    if (building) {
+
+        const selectedBuildingLayer =
+            L.geoJSON(building);
+
+        const bounds =
+            selectedBuildingLayer.getBounds();
+
+        const centre =
+            bounds.getCenter();
+
+        map.setView(
+            centre,
+            18
+        );
+
+        destinationMarker =
+            L.marker(centre)
+                .addTo(map)
+                .bindPopup(
+                    building.properties?.name || "Building"
+                )
+                .openPopup();
+
+    }
+
+
+}
+
+    })
+    .catch(error => {
+
+        console.error(
+            "Building data error:",
+            error
+        );
+
     });
 
-//
-// ============================================
-// MAP CLICK
-//
 
-map.on("click", e => {
+map.on(
+    "click",
+    event => {
 
-    const clicked = e.latlng;
+        const clicked =
+            event.latlng;
 
-    const clickedBuilding = [...map._layers ? Object.values(map._layers) : []]
-        .some(layer => layer.feature && layer.getBounds?.().contains(clicked));
+        let clickedBuilding = false;
 
-    if (!clickedBuilding) {
-        createRoute(clicked, "Custom Destination");
+        if (buildingLayer) {
+
+            buildingLayer.eachLayer(
+                layer => {
+
+                    if (
+                        clickedBuilding ||
+                        !layer.getBounds
+                    ) {
+                        return;
+                    }
+
+                    if (
+                        layer
+                            .getBounds()
+                            .contains(clicked)
+                    ) {
+
+                        clickedBuilding = true;
+
+                    }
+
+                }
+            );
+
+        }
+
+        if (!clickedBuilding) {
+
+            createRoute(
+                clicked
+            );
+
+        }
+
     }
-});
+);
 
-//
-// ============================================
-// BOUNDARY LOCK
-//
 
-map.on("drag", () => {
-    map.panInsideBounds(campusBounds, { animate: false });
-});
+map.on(
+    "drag",
+    () => {
+
+        map.panInsideBounds(
+            campusBounds,
+            {
+                animate: false
+            }
+        );
+
+    }
+);

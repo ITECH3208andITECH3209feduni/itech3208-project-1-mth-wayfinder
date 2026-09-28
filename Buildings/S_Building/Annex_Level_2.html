@@ -10,43 +10,62 @@
 
 <body>
 
-<!-- Search bar (top overlay) -->
 <header>
+
     <div class="search-bar">
 
-        <input 
-            type="text" 
-            id="pageSearch" 
+        <input
+            type="text"
+            id="pageSearch"
             placeholder="Search buildings..."
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
         >
 
         <div id="searchResults"></div>
 
     </div>
+
 </header>
 
 <!-- Main map/content -->
  <main>
- <h1>Building - S - Annex_Level_2</h1>
+ <h1>
+    <a href="../../index.html?building=S">
+        S Building
+    </a>
+</h1>
+ 
+    <div class="floor-navigation">
 
-  <p><a href="Annex_Level_2.html">Annex Level 2</a></p>
-  <p><a href="Annex_Level_3.html">Annex Level 3</a></p>
-  <p><a href="Level_1.html">Level 1</a></p>
-  <p><a href="Level_2.html">Level 2</a></p>
+        <a href="Level_0.html">Level 0</a>
+        <a href="Level_1.html">Level 1</a>
+        <a href="Level_2.html">Level 2</a>
+        <a>Annex Level 2</a>
+        <a href="Annex_Level_3.html">Annex Level 3</a>
+
+    </div>
 
      <div id="imageViewer">
+
+        <div id="floorPlanContainer">
+
         <img 
             id="floorPlan"
             src="Images/FP-MTH S Annex Level 2.png"
-            alt="S Building Annex_Level_2 Floor Plan"
+            alt="S Building Annex Level 2 Floor Plan"
         >
+
+        </div>
+
     </div>
  </main>
 
 <!-- Bottom navigation -->
 <footer>
     <button class="mapButton">Map</button>
-    <button>Points of Interest</button>
     <button id="buildingsBtn">Buildings</button>
 </footer>
 
@@ -56,4 +75,4 @@
 
 </body>
 </html>
-</html>
+

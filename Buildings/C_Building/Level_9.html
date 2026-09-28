@@ -10,41 +10,60 @@
 
 <body>
 
-<!-- Search bar (top overlay) -->
 <header>
+
     <div class="search-bar">
 
-        <input 
-            type="text" 
-            id="pageSearch" 
+        <input
+            type="text"
+            id="pageSearch"
             placeholder="Search buildings..."
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
         >
 
         <div id="searchResults"></div>
 
     </div>
+
 </header>
 
 <!-- Main map/content -->
  <main>
- <h1>Building - C - Level - 9</h1>
+ <h1>
+    <a href="../../index.html?building=C">
+        C Building
+    </a>
+</h1>
 
-  <p><a href="Level_0.html">Level 0</a></p>
-  <p><a href="Level_9.html">Level 9</a></p>
+    <div class="floor-navigation">
+
+        <a href="Level_0.html">Level 0</a>
+        <a>Level 9</a>
+
+    </div>
 
      <div id="imageViewer">
+
+        <div id="floorPlanContainer">
+
         <img 
             id="floorPlan"
-            src="Images/FP-MTH C Level 9.png"
-            alt="C Building Level 9 Floor Plan"
+            src="Images/FP-MTH C Level 0.png"
+            alt="C Building Level 0 Floor Plan"
         >
+
+        </div>
+
     </div>
+
  </main>
 
 <!-- Bottom navigation -->
 <footer>
     <button class="mapButton">Map</button>
-    <button>Points of Interest</button>
     <button id="buildingsBtn">Buildings</button>
 </footer>
 
@@ -53,5 +72,4 @@
 <script src="../../scripts/imageViewer.js"></script>
 
 </body>
-</html>
 </html>
